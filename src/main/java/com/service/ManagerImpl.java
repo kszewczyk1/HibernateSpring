@@ -64,4 +64,39 @@ public class ManagerImpl implements Manager {
         provider.setProducts(products);
         sessionFactory.getCurrentSession().update(provider);
     }
+
+    @Override
+    public Long addProduct(Product product) {
+        Long id = (Long) sessionFactory.getCurrentSession().save(product);
+        product.setId(id);
+        return id;
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return sessionFactory.getCurrentSession().getNamedQuery("product.all").list();
+    }
+
+    @Override
+    public void deleteProduct(Product product) {
+        product = (Product) sessionFactory.getCurrentSession().get(Product.class, product.getId());
+        Provider provider = (Provider) sessionFactory.getCurrentSession().get(Provider.class, product.getProvider().getProviderId());
+        provider.getProducts().remove(product);
+        sessionFactory.getCurrentSession().delete(product);
+    }
+
+    @Override
+    public Product getProductById(Long productId) {
+        return (Product) sessionFactory.getCurrentSession().get(Product.class, productId);
+    }
+
+    @Override
+    public void updateProduct(Product product, String productName, double productPrice, boolean isDelivered, Provider provider) {
+        product = (Product) sessionFactory.getCurrentSession().get(Product.class, product.getId());
+        product.setProductName(productName);
+        product.setProductPrice(productPrice);
+        product.setIsDelivered(isDelivered);
+        product.setProvider(provider);
+        sessionFactory.getCurrentSession().update(product);
+    }
 }

@@ -13,4 +13,11 @@ public interface Manager {
     List<Provider> getAllProviders();
     Provider getProviderById(Long providerId);
     void updateProvider(Provider provider, String providerName, String providerNip, List<Product> products);
+
+    //Product
+    Long addProduct(Product product);
+    void deleteProduct(Product product);
+    List<Product> getAllProducts();
+    Product getProductById(Long productId);
+    void updateProduct(Product product, String productName, double productPrice, boolean isDelivered, Provider provider);
 }
