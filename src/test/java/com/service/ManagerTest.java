@@ -43,7 +43,35 @@ public class ManagerTest {
 
     Product product = new Product();
     Provider provider = new Provider();
+/*
+    @BeforeClass
+    public static void beforeAll() {
+        Product product = new Product();
+        Provider provider = new Provider();
 
+        provider.setProviderName("exampleName1");
+        provider.setProviderNip("exampleNip1");
+
+        product.setProductName("exampleName1");
+        product.setProductPrice(5.0);
+        product.setProvider(provider);
+        product.setIsDelivered(true);
+
+        manager.addProvider(provider);
+        manager.addProduct(product);
+
+        provider.setProviderName("exampleName2");
+        provider.setProviderNip("exampleNip2");
+
+        product.setProductName("exampleName2");
+        product.setProductPrice(4.0);
+        product.setProvider(provider);
+        product.setIsDelivered(true);
+
+        manager.addProvider(provider);
+        manager.addProduct(product);
+    }
+*/
     @Before
     public void before() {
         provider.setProviderName(providerName1);
@@ -110,6 +138,84 @@ public class ManagerTest {
         assertEquals(providerNip1, provider.getProviderNip());
     }
 
+    @Test
+    public void getProvidersByNipCheck() {
+        manager.addProvider(provider);
+        String nip = provider.getProviderNip();
+        Provider provider = manager.getProviderByNip(nip);
+        assertEquals(nip, provider.getProviderNip());
+        assertEquals(providerName1, provider.getProviderName());
+    }
+
+
+
+    //Product
+
+    @Test
+    public void addProductCheck() {
+        manager.addProvider(provider);
+        Long productId = manager.addProduct(product);
+
+        Product retrievedProduct = manager.getProductById(productId);
+
+        assertEquals(productName1, retrievedProduct.getProductName());
+        assertEquals(productPrice1, retrievedProduct.getProductPrice(), 0);
+        assertEquals(provider, retrievedProduct.getProvider());
+        assertEquals(true, retrievedProduct.getIsDelivered());
+    }
+
+    @Test
+    public void getAllProductsCheck() {
+        List<Product> products = manager.getAllProducts();
+        int count = products.size();
+        manager.addProvider(provider);
+        manager.addProduct(product);
+        products = manager.getAllProducts();
+        assertEquals(count+1, products.size());
+    }
+
+    @Test
+    public void deleteProductCheck() {
+        manager.addProvider(provider);
+        manager.addProduct(product);
+        int count = manager.getAllProducts().size();
+        manager.deleteProduct(product);
+        assertEquals(count-1, manager.getAllProducts().size());
+        assertNull(manager.getProductById(product.getId()));
+    }
+
+    @Test
+    public void getProductsByIdCheck() {
+        manager.addProvider(provider);
+        Long id = manager.addProduct(product);
+        Product product = manager.getProductById(id);
+        assertEquals(id, product.getId());
+        assertEquals(productName1, product.getProductName());
+        assertEquals(productPrice1, product.getProductPrice(), 0);
+        assertEquals(true, product.getIsDelivered());
+    }
+
+    @Test
+    public void getDeliveredProductsCheck() {
+        int count = manager.getDeliveredProducts().size();
+        manager.addProvider(provider);
+        manager.addProduct(product);
+        assertEquals(count + 1, manager.getDeliveredProducts().size());
+        List<Product> deliveredProducts = manager.getDeliveredProducts();
+        for(Product product : deliveredProducts)
+            assertEquals(true, product.getIsDelivered());
+    }
+
+    @Test
+    public void getProductsByProviderCheck() {
+        List<Product> products = new ArrayList<Product>();
+        products.add(product);
+        provider.setProducts(products);
+        manager.addProvider(provider);
+
+        List<Product> retrievedProducts = manager.getProductsByProvider(provider);
+        assertEquals(1, retrievedProducts.size());
+    }
 
 
 }
