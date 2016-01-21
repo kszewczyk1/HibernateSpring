@@ -4,7 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "product.all", query = "SELECT p FROM Product p")
+        @NamedQuery(name = "product.all", query = "SELECT p FROM Product p"),
+        @NamedQuery(name = "product.delivered", query = "select p from Product p where p.isDelivered = true")
 })
 public class Product implements java.io.Serializable{
     private Long id;
