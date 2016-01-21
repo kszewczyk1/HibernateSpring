@@ -45,7 +45,7 @@ public class ManagerImpl implements Manager {
         provider = (Provider) sessionFactory.getCurrentSession().get(Provider.class, provider.getProviderId());
 
         for (Product product : provider.getProducts()) {
-            product.setProvider(null);
+            product.setIsDelivered(false);
             sessionFactory.getCurrentSession().update(product);
         }
         sessionFactory.getCurrentSession().delete(provider);
@@ -54,5 +54,14 @@ public class ManagerImpl implements Manager {
     @Override
     public Provider getProviderById(Long providerId) {
         return (Provider) sessionFactory.getCurrentSession().get(Provider.class, providerId);
+    }
+
+    @Override
+    public void updateProvider(Provider provider, String providerName, String providerNip, List<Product> products) {
+        provider = (Provider) sessionFactory.getCurrentSession().get(Provider.class, provider.getProviderId());
+        provider.setProviderName(providerName);
+        provider.setProviderNip(providerNip);
+        provider.setProducts(products);
+        sessionFactory.getCurrentSession().update(provider);
     }
 }

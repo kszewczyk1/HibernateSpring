@@ -11,6 +11,7 @@ public class Product implements java.io.Serializable{
     private Provider provider;
     private String productName;
     private double productPrice;
+    private boolean isDelivered = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,5 +45,13 @@ public class Product implements java.io.Serializable{
     }
     public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public boolean getIsDelivered() {
+        return isDelivered;
+    }
+
+    public void setIsDelivered(boolean isDelivered) {
+        this.isDelivered = isDelivered;
     }
 }
