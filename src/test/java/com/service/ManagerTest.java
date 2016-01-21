@@ -43,35 +43,7 @@ public class ManagerTest {
 
     Product product = new Product();
     Provider provider = new Provider();
-/*
-    @BeforeClass
-    public static void beforeAll() {
-        Product product = new Product();
-        Provider provider = new Provider();
 
-        provider.setProviderName("exampleName1");
-        provider.setProviderNip("exampleNip1");
-
-        product.setProductName("exampleName1");
-        product.setProductPrice(5.0);
-        product.setProvider(provider);
-        product.setIsDelivered(true);
-
-        manager.addProvider(provider);
-        manager.addProduct(product);
-
-        provider.setProviderName("exampleName2");
-        provider.setProviderNip("exampleNip2");
-
-        product.setProductName("exampleName2");
-        product.setProductPrice(4.0);
-        product.setProvider(provider);
-        product.setIsDelivered(true);
-
-        manager.addProvider(provider);
-        manager.addProduct(product);
-    }
-*/
     @Before
     public void before() {
         provider.setProviderName(providerName1);
@@ -103,9 +75,9 @@ public class ManagerTest {
 
     @Test
     public void addProviderCheck() {
-        manager.addProvider(provider);
+        Long id = manager.addProvider(provider);
 
-        Provider retrievedProvider = manager.getProviderByNip(providerNip1);
+        Provider retrievedProvider = manager.getProviderById(id);
 
         assertEquals(providerName1, retrievedProvider.getProviderName());
         assertEquals(providerNip1, retrievedProvider.getProviderNip());
@@ -147,7 +119,26 @@ public class ManagerTest {
         assertEquals(providerName1, provider.getProviderName());
     }
 
+    @Test
+    public void updateProviderCheck() {
+        List<Product> products = new ArrayList<Product>();
+        products.add(product);
+        provider.setProducts(products);
+        manager.addProvider(provider);
+        manager.updateProvider(provider, providerName2, providerNip2, products);
+        assertEquals(providerName2, provider.getProviderName());
+        assertEquals(providerNip2, provider.getProviderNip());
+        assertEquals(products, provider.getProducts());
 
+        List<Provider> providers = manager.getAllProviders();
+        for(Provider p : providers) {
+            if(!p.equals(provider)) {
+                assertEquals(p.getProviderName(), not(providerName2));
+                assertEquals(p.getProviderNip(), not(providerNip2));
+                assertEquals(p.getProducts(), not(products));
+            }
+        }
+    }
 
     //Product
 
@@ -217,5 +208,23 @@ public class ManagerTest {
         assertEquals(1, retrievedProducts.size());
     }
 
+    @Test
+    public void updateProductCheck() {
+        manager.addProvider(provider);
+        manager.addProduct(product);
+        manager.updateProduct(product, productName2, productPrice2, true, provider);
+        assertEquals(productName2, product.getProductName());
+        assertEquals(productPrice2, product.getProductPrice(), 0);
+        assertEquals(true, product.getIsDelivered());
+        assertEquals(provider, product.getProvider());
 
+        List<Product> products = manager.getAllProducts();
+        for(Product p : products) {
+            if(!p.equals(product)) {
+                assertEquals(p.getProductName(), not(providerName2));
+                assertEquals(p.getProductPrice(), not(providerNip2));
+                assertEquals(p.getProvider(), not(provider));
+            }
+        }
+    }
 }
