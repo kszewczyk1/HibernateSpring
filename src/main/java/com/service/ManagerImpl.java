@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -91,6 +92,11 @@ public class ManagerImpl implements Manager {
     }
 
     @Override
+    public List<Product> getDeliveredProducts() {
+        return sessionFactory.getCurrentSession().getNamedQuery("product.delivered").list();
+    }
+
+    @Override
     public void updateProduct(Product product, String productName, double productPrice, boolean isDelivered, Provider provider) {
         product = (Product) sessionFactory.getCurrentSession().get(Product.class, product.getId());
         product.setProductName(productName);
@@ -98,5 +104,12 @@ public class ManagerImpl implements Manager {
         product.setIsDelivered(isDelivered);
         product.setProvider(provider);
         sessionFactory.getCurrentSession().update(product);
+    }
+
+    @Override
+    public List<Product> getProductsByProvider(Provider provider) {
+        provider = (Provider) sessionFactory.getCurrentSession().get(Provider.class, provider.getProviderId());
+        List<Product> products = new ArrayList<Product>(provider.getProducts());
+        return products;
     }
 }

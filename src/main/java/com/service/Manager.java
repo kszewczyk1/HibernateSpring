@@ -19,5 +19,7 @@ public interface Manager {
     void deleteProduct(Product product);
     List<Product> getAllProducts();
     Product getProductById(Long productId);
+    List<Product> getDeliveredProducts();
     void updateProduct(Product product, String productName, double productPrice, boolean isDelivered, Provider provider);
+    List<Product> getProductsByProvider(Provider provider);
 }
