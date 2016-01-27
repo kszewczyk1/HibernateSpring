@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @Transactional
@@ -32,8 +34,16 @@ public class ManagerImpl implements Manager {
     }
 
     @Override
-    public Provider getProviderByNip(String providerNip) {
-        return (Provider) sessionFactory.getCurrentSession().getNamedQuery("provider.byNip").setString("providerNip", providerNip).uniqueResult();
+    public List<Provider> getProviderByNip(String providerNip) {
+        List<Provider> providers = new ArrayList<Provider>();
+        Pattern pattern = Pattern.compile(".*" + providerNip + ".*");
+        Matcher matcher;
+        for (Provider p : getAllProviders()) {
+            matcher = pattern.matcher(p.getProviderNip());
+            if(matcher.matches())
+                providers.add(p);
+        }
+        return providers;
     }
 
     @Override

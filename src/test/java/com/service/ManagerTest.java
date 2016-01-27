@@ -15,10 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/beans.xml" })
@@ -38,12 +41,40 @@ public class ManagerTest {
     private final String productName1 = "productName1";
     private final double productPrice1 = 1.0;
 
-    private final String productName2 = "prodictName2";
+    private final String productName2 = "prodictName1";
     private final double productPrice2 = 2.0;
 
     Product product = new Product();
     Provider provider = new Provider();
+/*
+    @BeforeClass
+    public static void beforeAll() {
+        Product product = new Product();
+        Provider provider = new Provider();
 
+        provider.setProviderName("exampleName1");
+        provider.setProviderNip("exampleNip1");
+
+        product.setProductName("exampleName1");
+        product.setProductPrice(5.0);
+        product.setProvider(provider);
+        product.setIsDelivered(true);
+
+        manager.addProvider(provider);
+        manager.addProduct(product);
+
+        provider.setProviderName("exampleName2");
+        provider.setProviderNip("exampleNip2");
+
+        product.setProductName("exampleName2");
+        product.setProductPrice(4.0);
+        product.setProvider(provider);
+        product.setIsDelivered(true);
+
+        manager.addProvider(provider);
+        manager.addProduct(product);
+    }
+*/
     @Before
     public void before() {
         provider.setProviderName(providerName1);
@@ -98,7 +129,7 @@ public class ManagerTest {
         int count = manager.getAllProviders().size();
         manager.deleteProvider(provider);
         assertEquals(count-1, manager.getAllProviders().size());
-        assertNull(manager.getProviderByNip(provider.getProviderNip()));
+        //assertNull(manager.getProviderByNip(provider.getProviderNip()));
     }
 
     @Test
@@ -112,11 +143,20 @@ public class ManagerTest {
 
     @Test
     public void getProvidersByNipCheck() {
+        List<Provider> providers = manager.getAllProviders();
         manager.addProvider(provider);
-        String nip = provider.getProviderNip();
-        Provider provider = manager.getProviderByNip(nip);
-        assertEquals(nip, provider.getProviderNip());
-        assertEquals(providerName1, provider.getProviderName());
+        String nip = "Nip";
+        int count = 0;
+
+
+
+        for(Provider p : providers) {
+            if(Pattern.compile(".*" + nip + ".*").matcher(manager.getProviderById(p.getProviderId()).getProviderNip()).matches())
+                count++;
+        }
+        providers = manager.getProviderByNip(nip);
+        assertEquals(providers.size(), count + 1);
+
     }
 
     @Test
@@ -133,9 +173,9 @@ public class ManagerTest {
         List<Provider> providers = manager.getAllProviders();
         for(Provider p : providers) {
             if(!p.equals(provider)) {
-                assertEquals(p.getProviderName(), not(providerName2));
-                assertEquals(p.getProviderNip(), not(providerNip2));
-                assertEquals(p.getProducts(), not(products));
+                assertThat(p.getProviderName(), is(not(providerName2)));
+                assertThat(p.getProviderNip(), is(not(providerNip2)));
+                assertThat(p.getProducts(), is(not(products)));
             }
         }
     }
@@ -219,12 +259,11 @@ public class ManagerTest {
         assertEquals(provider, product.getProvider());
 
         List<Product> products = manager.getAllProducts();
-        for(Product p : products) {
-            if(!p.equals(product)) {
-                assertEquals(p.getProductName(), not(providerName2));
-                assertEquals(p.getProductPrice(), not(providerNip2));
-                assertEquals(p.getProvider(), not(provider));
+        for(Product p : products)
+            if (!p.equals(product)) {
+                assertThat(p.getProductName(), is(not(productName2)));
+                assertThat((p.getProductPrice()), is(not(productPrice2)));
+                assertThat(p.getProvider(), is(not(provider)));
             }
-        }
     }
 }

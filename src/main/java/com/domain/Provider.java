@@ -6,8 +6,7 @@ import java.util.List;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "provider.all", query = "select p from Provider p"),
-        @NamedQuery(name = "provider.byNip", query = "select p from Provider p where p.providerNip = :providerNip")
+        @NamedQuery(name = "provider.all", query = "select p from Provider p")
 })
 public class Provider {
     private Long providerId;

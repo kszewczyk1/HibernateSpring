@@ -9,7 +9,7 @@ public interface Manager {
     //Provider
     Long addProvider(Provider provider);
     void deleteProvider(Provider provider);
-    Provider getProviderByNip(String providerNip);
+    List getProviderByNip(String providerNip);
     List<Provider> getAllProviders();
     Provider getProviderById(Long providerId);
     void updateProvider(Provider provider, String providerName, String providerNip, List<Product> products);
