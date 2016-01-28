@@ -129,7 +129,7 @@ public class ManagerTest {
         int count = manager.getAllProviders().size();
         manager.deleteProvider(provider);
         assertEquals(count-1, manager.getAllProviders().size());
-        //assertNull(manager.getProviderByNip(provider.getProviderNip()));
+        assertNull(manager.getProviderById(provider.getProviderId()));
     }
 
     @Test
@@ -147,8 +147,6 @@ public class ManagerTest {
         manager.addProvider(provider);
         String nip = "Nip";
         int count = 0;
-
-
 
         for(Provider p : providers) {
             if(Pattern.compile(".*" + nip + ".*").matcher(manager.getProviderById(p.getProviderId()).getProviderNip()).matches())
