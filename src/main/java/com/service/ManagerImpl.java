@@ -47,6 +47,11 @@ public class ManagerImpl implements Manager {
     }
 
     @Override
+    public Provider getProviderByPattern(String providerNip) {
+        return (Provider) sessionFactory.getCurrentSession().getNamedQuery("provider.nip").setString("providerNip", providerNip).uniqueResult();
+    }
+
+    @Override
     public List<Provider> getAllProviders() {
         return sessionFactory.getCurrentSession().getNamedQuery("provider.all").list();
     }

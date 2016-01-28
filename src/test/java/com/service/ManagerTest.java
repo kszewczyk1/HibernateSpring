@@ -46,6 +46,7 @@ public class ManagerTest {
 
     Product product = new Product();
     Provider provider = new Provider();
+    Provider p = new Provider();
 /*
     @BeforeClass
     public static void beforeAll() {
@@ -80,6 +81,9 @@ public class ManagerTest {
         provider.setProviderName(providerName1);
         provider.setProviderNip(providerNip1);
 
+        p.setProviderName(providerName1);
+        p.setProviderNip(providerNip1);
+
         product.setProductName(productName1);
         product.setProductPrice(productPrice1);
         product.setProvider(provider);
@@ -99,6 +103,8 @@ public class ManagerTest {
         for(Provider prov : providers) {
             if(prov.getProviderId() == provider.getProviderId())
                 manager.deleteProvider(provider);
+            if(prov.getProviderId() == p.getProviderId())
+                manager.deleteProvider(p);
         }
     }
 
@@ -155,6 +161,27 @@ public class ManagerTest {
         providers = manager.getProviderByNip(nip);
         assertEquals(providers.size(), count + 1);
 
+        providers = manager.getAllProviders();
+        manager.addProvider(provider);
+        nip = "pin";
+        count = 0;
+
+        for(Provider p : providers) {
+            if(Pattern.compile(".*" + nip + ".*").matcher(manager.getProviderById(p.getProviderId()).getProviderNip()).matches())
+                count++;
+        }
+        providers = manager.getProviderByNip(nip);
+        assertEquals(providers.size(), count);
+    }
+
+    @Test
+    public void getProviderByPatternCheck() {
+        String nip = "providerNip1";
+        manager.addProvider(p);
+
+        assertEquals(manager.getProviderByPattern(nip), p);
+        nip = "pattern";
+        assertNull(manager.getProviderByPattern(nip));
     }
 
     @Test

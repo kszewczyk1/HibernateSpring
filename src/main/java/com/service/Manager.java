@@ -13,6 +13,7 @@ public interface Manager {
     List<Provider> getAllProviders();
     Provider getProviderById(Long providerId);
     void updateProvider(Provider provider, String providerName, String providerNip, List<Product> products);
+    public Provider getProviderByPattern(String nip);
 
     //Product
     Long addProduct(Product product);
